@@ -1,9 +1,25 @@
 const puppeteer = require('puppeteer');
+const fs = require('fs');
+const componentGroup = process.argv[2];
+const componentName = process.argv[3];
+const url = `http://localhost:6006/iframe.html?selectedKind=${componentGroup}&selectedStory=${componentName}`;
 
-const url = `http://localhost:6006/iframe.html?selectedKind=${
-  process.argv[2]
-}&selectedStory=${process.argv[3]}`;
+// Remove all screenshots
+const clearScreenshotsDir = function(dirPath) {
+  try {
+    var files = fs.readdirSync(dirPath);
+  } catch (e) {
+    return;
+  }
+  if (files.length > 0)
+    for (var i = 0; i < files.length; i++) {
+      var filePath = dirPath + '/' + files[i];
+      if (fs.statSync(filePath).isFile()) fs.unlinkSync(filePath);
+    }
+};
+clearScreenshotsDir('./screenshots');
 
+// Add screenshots to folder
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -63,37 +79,37 @@ const url = `http://localhost:6006/iframe.html?selectedKind=${
   }
 
   await screenshotDOMElement({
-    path: `screenshots/${process.argv[3]}_desktop_ar.png`,
+    path: `screenshots/${componentName}_desktop_ar.png`,
     selector: '.uil-locale-provider',
     screenType: 'desktop',
     arabic: true
   });
   await screenshotDOMElement({
-    path: `screenshots/${process.argv[3]}_tablet_ar.png`,
+    path: `screenshots/${componentName}_tablet_ar.png`,
     selector: '.uil-locale-provider',
     screenType: 'tablet',
     arabic: true
   });
   await screenshotDOMElement({
-    path: `screenshots/${process.argv[3]}_phone_ar.png`,
+    path: `screenshots/${componentName}_phone_ar.png`,
     selector: '.uil-locale-provider',
     screenType: 'phone',
     arabic: true
   });
   await screenshotDOMElement({
-    path: `screenshots/${process.argv[3]}_desktop_en.png`,
+    path: `screenshots/${componentName}_desktop_en.png`,
     selector: '.uil-locale-provider',
     screenType: 'desktop',
     arabic: false
   });
   await screenshotDOMElement({
-    path: `screenshots/${process.argv[3]}_tablet_en.png`,
+    path: `screenshots/${componentName}_tablet_en.png`,
     selector: '.uil-locale-provider',
     screenType: 'tablet',
     arabic: false
   });
   await screenshotDOMElement({
-    path: `screenshots/${process.argv[3]}_phone_en.png`,
+    path: `screenshots/${componentName}_phone_en.png`,
     selector: '.uil-locale-provider',
     screenType: 'phone',
     arabic: false
